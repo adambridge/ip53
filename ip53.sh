@@ -160,7 +160,6 @@ EOF
         --change-batch file://"$TMPFILE" \
         --query '[ChangeInfo.Comment, ChangeInfo.Id, ChangeInfo.Status, ChangeInfo.SubmittedAt]' \
         --output text
-    echo ""
 
     # Clean up
     rm $TMPFILE
