@@ -111,11 +111,10 @@ function valid_ip()
 
 DIR="$HOME/.ip53"
 test -e $DIR || mkdir $DIR
-LOGFILE="$DIR/ip53__${ZONEID}__${RECORDSET}__.log"
 IPFILE="$DIR/ip53__${ZONEID}__${RECORDSET}__.ip"
 
 if ! valid_ip $IP; then
-    echo "Invalid IP address: $IP" >> "$LOGFILE"
+    echo "Invalid IP address: $IP"
     exit 1
 fi
 
@@ -128,10 +127,10 @@ fi
 # Compare local IP to dns of recordset
 if [ "$IP" ==  "$AWSIP" ]; then
     # code if found
-    # echo "IP is still $IP. Exiting" >> "$LOGFILE"
+    # echo "IP is still $IP. Exiting"
     exit 0
 else
-    echo "IP has changed to $IP" >> "$LOGFILE"
+    echo "IP has changed to $IP"
     # Fill a temp file with valid JSON
     TMPFILE=$(mktemp /tmp/temporary-file.XXXXXXXX)
     cat > ${TMPFILE} << EOF
@@ -160,8 +159,8 @@ EOF
         --hosted-zone-id $ZONEID \
         --change-batch file://"$TMPFILE" \
         --query '[ChangeInfo.Comment, ChangeInfo.Id, ChangeInfo.Status, ChangeInfo.SubmittedAt]' \
-        --output text >> "$LOGFILE"
-    echo "" >> "$LOGFILE"
+        --output text
+    echo ""
 
     # Clean up
     rm $TMPFILE
