@@ -3,7 +3,7 @@
 . ~/.ip53/ip53.config
 COMMENT="Auto updating @ `date`"
 
-function update_route53() {
+function update() {
     TMPFILE=$(mktemp /tmp/temporary-file.XXXXXXXX)
     TEMPLATE="$(cat ~/.ip53/json.tmpl)"
     eval "echo \"$TEMPLATE\"" > $TMPFILE
@@ -18,4 +18,4 @@ IP=`curl -4sS http://checkip.amazonaws.com` || { echo checkip.amazonaws.com fail
 AWSIP="$(aws route53 list-resource-record-sets --hosted-zone $ZONE_ID --start-record-name $RECORD_NAME \
         --max-items 1 --output json | jq -r \ '.ResourceRecordSets[].ResourceRecords[].Value')"
 
-[ ! "$IP" ==  "$AWSIP" ] || { echo "IP has changed to $IP" && update_route53; }
+[ "$IP" ==  "$AWSIP" ] || { echo "IP has changed to $IP" && update; }
