@@ -13,9 +13,12 @@ function update() {
     rm $TMPFILE
 }
 
-IP=`curl -4sS http://checkip.amazonaws.com` || { echo checkip.amazonaws.com failed && exit 1; }
+IP=`curl -4sS http://checkip.amazonaws.com` || { echo checkip.amazonaws.com failed && exit 2; }
 
-AWSIP="$(aws route53 list-resource-record-sets --hosted-zone $ZONE_ID --start-record-name $RECORD_NAME \
-        --max-items 1 --output json | jq -r \ '.ResourceRecordSets[].ResourceRecords[].Value')"
+AWSOUT="$(aws route53 list-resource-record-sets --hosted-zone $ZONE_ID --start-record-name $RECORD_NAME --max-items 1 --output json)"
+
+[ $? -eq 0 ] || { printf "$AWSOUT" && exit 3; }
+
+AWSIP="$(jq -r '.ResourceRecordSets[].ResourceRecords[].Value' <<< $AWSOUT)"
 
 [ "$IP" ==  "$AWSIP" ] || { echo "IP has changed to $IP" && update; }
