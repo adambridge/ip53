@@ -1,18 +1,25 @@
 #!/bin/bash
 
 # Install dependencies
-sudo apt-get install awscli jq
+which aws >/dev/null || sudo apt-get install awscli
+which jq >/dev/null || sudo apt-get install jq
 
-# Create ~/bin and ~/.ip53 if they don't exist
-[ -d ~/bin ] || mkdir ~/bin
+# Create ~/.ip53 and local bin dirs if they don't exist
+BIN=~/bin
+[ -d $BIN ] || mkdir $BIN
 [ -d ~/.ip53 ] || mkdir ~/.ip53
  
 # Get directory that the install.sh and ip53.sh are in
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# Copy to ~/bin/ip53.sh and create link ~/bin/ip53 
-cp $SCRIPTDIR/ip53.sh ~/bin/ip53.sh
-ln -fs ~/bin/ip53.sh ~/bin/ip53
+# Copy ip53.sh to bin and create link ip53 
+cp $SCRIPTDIR/ip53.sh $BIN/ip53.sh
+ln -fs $BIN/ip53.sh $BIN/ip53
+
+# Add bin to PATH if necessary
+[ `basename $SHELL` = "bash" ] && PROFILE=~/.bash_profile || PROFILE=~/.profile
+[ -e $PROFILE ] && . $PROFILE
+which ip53 >/dev/null || echo "export PATH=\"\$PATH:$BIN\"     # IP53-AUTO-INSTALL" >> $PROFILE
 
 # Copy template.json to ~/.ip53
 cp $SCRIPTDIR/json.tmpl ~/.ip53/json.tmpl
@@ -27,10 +34,10 @@ fi
 
 # Install crontab
 TMPFILE=$(mktemp /tmp/temporary-file.XXXXXXXX)
-crontab -l | grep -v "#IP53-AUTO-INSTALL$" > $TMPFILE
+crontab -l | grep -v "IP53-AUTO-INSTALL$" > $TMPFILE
 
 cat <<EOF >> $TMPFILE
-*/5 * * * * ~/bin/ip53 | sed "s/^/\$(date): /" >> ~/.ip53/ip53.log 2>&1 #IP53-AUTO-INSTALL
+*/5 * * * * $BIN/ip53 | sed "s/^/\$(date): /" >> ~/.ip53/ip53.log 2>&1     # IP53-AUTO-INSTALL
 EOF
 
 crontab $TMPFILE
