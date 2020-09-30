@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ~/.ip53/ip53.config
+. ~/.ip53/ip53.config || { echo Run ./install.sh first && exit 1; }
 COMMENT="Auto updating @ `date`"
 
 function update() {
