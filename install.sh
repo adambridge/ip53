@@ -4,6 +4,9 @@
 which aws >/dev/null || sudo apt-get install awscli
 which jq >/dev/null || sudo apt-get install jq
 
+# Set up aws credentials
+aws sts get-caller-identity || aws configure
+
 # Create ~/.ip53 and local bin dirs if they don't exist
 BIN=~/bin
 [ -d $BIN ] || mkdir $BIN
