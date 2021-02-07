@@ -20,7 +20,7 @@ cp $SCRIPTDIR/ip53.sh $BIN/ip53.sh
 ln -fs $BIN/ip53.sh $BIN/ip53
 
 # Add bin to PATH if necessary
-[ `basename $SHELL` = "bash" ] && PROFILE=~/.bash_profile || PROFILE=~/.profile
+[ `basename $SHELL` = "bash" ] && [ -e ~/.bash_profile ] && PROFILE=~/.bash_profile || PROFILE=~/.profile
 [ -e $PROFILE ] && . $PROFILE
 which ip53 >/dev/null || echo "export PATH=\"\$PATH:$BIN\"     # IP53-AUTO-INSTALL" >> $PROFILE
 
