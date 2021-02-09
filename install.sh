@@ -30,9 +30,9 @@ cp $SCRIPTDIR/json.tmpl ~/.ip53/json.tmpl
 # Get Route 53 zone ID and record name
 if [ ! -e ~/.ip53/ip53.config ]; then
     echo Enter Route 53 hosted zone ID \(e.g. H6DWNY8UJ3Q1\): && read ZONE_ID
-    echo Enter Route 53 record name \(e.g. my.domain.com\): && read RECORD_NAME
+    echo Enter Route 53 record name\(s\) \(e.g. my.domain.com other.domain.com\): && read RECORD_NAMES
     echo ZONE_ID=$ZONE_ID > ~/.ip53/ip53.config
-    echo RECORD_NAME=$RECORD_NAME >> ~/.ip53/ip53.config
+    echo RECORD_NAMES=$RECORD_NAMES >> ~/.ip53/ip53.config
 fi
 
 # Install crontab
