@@ -40,7 +40,7 @@ TMPFILE=$(mktemp /tmp/temporary-file.XXXXXXXX)
 crontab -l | grep -v "IP53-AUTO-INSTALL$" > $TMPFILE
 
 cat <<EOF >> $TMPFILE
-*/5 * * * * $BIN/ip53 | sed "s/^/\$(date): /" >> ~/.ip53/ip53.log 2>&1     # IP53-AUTO-INSTALL
+*/5 * * * * $BIN/ip53 2>&1 | sed "s/^/\$(date): /" >> ~/.ip53/ip53.log     # IP53-AUTO-INSTALL
 EOF
 
 crontab $TMPFILE
